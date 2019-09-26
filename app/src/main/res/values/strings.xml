@@ -12,4 +12,6 @@
     <string name="a">a</string>
     <string name="ash">a♯</string>
     <string name="b">b</string>
+    <string name="lowO">Change Octaves</string>
+    <string name="song1">Song 1</string>
 </resources>
