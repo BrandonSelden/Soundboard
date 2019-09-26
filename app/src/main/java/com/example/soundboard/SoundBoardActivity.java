@@ -11,12 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class SoundBoardActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button c, csh, d, dsh, e, f, fsh, g, gsh, a, ash, b, octave, song1;
-    private SoundPool soundPool;
-    private boolean isSoundPoolLoaded, octaveHigh;
-    private int cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfshNote, hfNote, hgNote, hgshNote, laNote, lashNote, lbNote;
+import java.util.HashMap;
+import java.util.Map;
 
+public class SoundBoardActivity extends AppCompatActivity implements View.OnClickListener {
+    private Button c, csh, d, dsh, e, f, fsh, g, gsh, a, ash, b, song1, scale;
+    private SoundPool soundPool;
+    private boolean isSoundPoolLoaded;
+    private Note cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfshNote, hfNote, hgNote, hgshNote, laNote, lashNote, lbNote;
+    private Map<Integer, Integer> noteMap;
+    private Note[] notes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +28,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         wireWidgets();
         setListeners();
         initializeSoundPool();
+        notes = new Note[] {cNote, cshNote, dNote, dshNote, eNote, fNote, fshNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfshNote, hfNote, hgNote, hgshNote, laNote, lashNote, lbNote};
 
     }
 
@@ -37,30 +42,45 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 isSoundPoolLoaded = true;
             }
         });
-        cNote = soundPool.load(this, R.raw.scalec, 1);
-        cshNote = soundPool.load(this, R.raw.scalecs, 1);
-        dNote = soundPool.load(this, R.raw.scaled, 1);
-        dshNote = soundPool.load(this, R.raw.scaleds, 1);
-        eNote = soundPool.load(this, R.raw.scalee, 1);
-        fNote = soundPool.load(this, R.raw.scalef, 1);
-        fshNote = soundPool.load(this, R.raw.scalefs, 1);
-        gNote = soundPool.load(this, R.raw.scaleg, 1);
-        gshNote = soundPool.load(this, R.raw.scalegs, 1);
-        aNote = soundPool.load(this, R.raw.scalehigha, 1);
-        ashNote = soundPool.load(this, R.raw.scalehighbb, 1);
-        bNote = soundPool.load(this, R.raw.scalehighb, 1);
-        hcNote = soundPool.load(this, R.raw.scalehighc, 1);
-        hcshNote = soundPool.load(this, R.raw.scalehighcs, 1);
-        hdNote = soundPool.load(this, R.raw.scalehighd, 1);
-        hdshNote = soundPool.load(this, R.raw.scalehighds, 1);
-        heNote = soundPool.load(this, R.raw.scalehighe, 1);
-        hfNote = soundPool.load(this, R.raw.scalehighf, 1);
-        hfshNote = soundPool.load(this, R.raw.scalehighfs, 1);
-        hgNote = soundPool.load(this, R.raw.scalehighg, 1);
-        hgshNote = soundPool.load(this, R.raw.scalehighgs, 1);
-        laNote = soundPool.load(this, R.raw.scalea, 1);
-        lashNote = soundPool.load(this, R.raw.scalebb, 1);
-        lbNote = soundPool.load(this, R.raw.scaleb, 1);
+        cNote = new Note(soundPool.load(this, R.raw.scalec, 1), 100);
+        cshNote = new Note(soundPool.load(this, R.raw.scalecs, 1), 100);
+        dNote = new Note(soundPool.load(this, R.raw.scaled, 1), 100);
+        dshNote = new Note(soundPool.load(this, R.raw.scaleds, 1), 100);
+        eNote = new Note(soundPool.load(this, R.raw.scalee, 1), 100);
+        fNote = new Note(soundPool.load(this, R.raw.scalef, 1), 100);
+        fshNote = new Note(soundPool.load(this, R.raw.scalefs, 1), 100);
+        gNote = new Note(soundPool.load(this, R.raw.scaleg, 1), 100);
+        gshNote = new Note(soundPool.load(this, R.raw.scalegs, 1), 100);
+        aNote = new Note(soundPool.load(this, R.raw.scalehigha, 1), 100);
+        ashNote = new Note(soundPool.load(this, R.raw.scalehighbb, 1), 100);
+        bNote = new Note(soundPool.load(this, R.raw.scalehighb, 1), 100);
+        hcNote = new Note(soundPool.load(this, R.raw.scalehighc, 1), 100);
+        hcshNote = new Note(soundPool.load(this, R.raw.scalehighcs, 1), 100);
+        hdNote = new Note(soundPool.load(this, R.raw.scalehighd, 1), 100);
+        hdshNote = new Note(soundPool.load(this, R.raw.scalehighds, 1), 100);
+        heNote = new Note(soundPool.load(this, R.raw.scalehighe, 1), 100);
+        hfNote = new Note(soundPool.load(this, R.raw.scalehighf, 1), 100);
+        hfshNote = new Note(soundPool.load(this, R.raw.scalehighfs, 1), 100);
+        hgNote = new Note(soundPool.load(this, R.raw.scalehighg, 1), 100);
+        hgshNote = new Note(soundPool.load(this, R.raw.scalehighgs, 1), 100);
+        laNote = new Note(soundPool.load(this, R.raw.scalea, 1), 100);
+        lashNote = new Note(soundPool.load(this, R.raw.scalebb, 1), 100);
+        lbNote = new Note(soundPool.load(this, R.raw.scaleb, 1), 100);
+        noteMap = new HashMap<>();
+        noteMap.put(c.getId(), cNote.getSoundId());
+        noteMap.put(csh.getId(), cshNote.getSoundId());
+        noteMap.put(d.getId(), dNote.getSoundId());
+        noteMap.put(dsh.getId(), dshNote.getSoundId());
+        noteMap.put(e.getId(), eNote.getSoundId());
+        noteMap.put(f.getId(), fNote.getSoundId());
+        noteMap.put(fsh.getId(), fshNote.getSoundId());
+        noteMap.put(g.getId(), gNote.getSoundId());
+        noteMap.put(gsh.getId(), gshNote.getSoundId());
+        noteMap.put(a.getId(), aNote.getSoundId());
+        noteMap.put(ash.getId(), ashNote.getSoundId());
+        noteMap.put(b.getId(), bNote.getSoundId());
+
+
 
     }
 
@@ -73,193 +93,209 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setListeners() {
-
-        c.setOnClickListener(this);
-        csh.setOnClickListener(this);
-        d.setOnClickListener(this);
-        dsh.setOnClickListener(this);
-        e.setOnClickListener(this);
-        f.setOnClickListener(this);
-        fsh.setOnClickListener(this);
-        g.setOnClickListener(this);
-        gsh.setOnClickListener(this);
-        a.setOnClickListener(this);
-        ash.setOnClickListener(this);
-        b.setOnClickListener(this);
-        octave.setOnClickListener(new View.OnClickListener() {
+//
+//        c.setOnClickListener(this);
+//        csh.setOnClickListener(this);
+//        d.setOnClickListener(this);
+//        dsh.setOnClickListener(this);
+//        e.setOnClickListener(this);
+//        f.setOnClickListener(this);
+//        fsh.setOnClickListener(this);
+//        g.setOnClickListener(this);
+//        gsh.setOnClickListener(this);
+//        a.setOnClickListener(this);
+//        ash.setOnClickListener(this);
+//        b.setOnClickListener(this);
+        scale.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                octaveHigh = !octaveHigh;
+            public void onClick(View view){
+                for(Note no : notes){
+                    soundPool.play(no.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(500);
+                }
             }
         });
         song1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isSoundPoolLoaded) {
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125); //end of first phrase
-                    soundPool.play(cNote, 1, 1, 1, 0, 1);
+                    soundPool.play(cNote.getSoundId(), 1, 1, 1, 0, 1);
                     delay(125);
-                    soundPool.play(cNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(cNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of second phrase
-                    soundPool.play(lbNote, 1, 1, 1, 0, 1);
+                    soundPool.play(lbNote.getSoundId(), 1, 1, 1, 0, 1);
                     delay(125);
-                    soundPool.play(lbNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lbNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of third phrase
-                    soundPool.play(lashNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(lashNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of fourth phrase
-                    soundPool.play(dNote, 1, 1, 1, 0, 1);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1);
                     delay(125);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125); //end of first phrase
-                    soundPool.play(cNote, 1, 1, 1, 0, 1);
+                    soundPool.play(cNote.getSoundId(), 1, 1, 1, 0, 1);
                     delay(125);
-                    soundPool.play(cNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(cNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of second phrase
-                    soundPool.play(lbNote, 1, 1, 1, 0, 1);
+                    soundPool.play(lbNote.getSoundId(), 1, 1, 1, 0, 1);
                     delay(125);
-                    soundPool.play(lbNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lbNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of third phrase
-                    soundPool.play(lashNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(lashNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    delay(425);
-                    soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    delay(300);
-                    soundPool.play(dNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(hdNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(aNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(375);
+                    soundPool.play(gshNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                    soundPool.play(dNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(fNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(fNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);
-                    soundPool.play(gNote, 1, 1, 1, 0, 1f);
+                    soundPool.play(gNote.getSoundId(), 1, 1, 1, 0, 1f);
                     delay(125);//end of fourth phrase
 
                 }
             }
         });
+        KeyboardListener keyboardListener = new KeyboardListener();
+        c.setOnClickListener(keyboardListener);
+        csh.setOnClickListener(keyboardListener);
+        d.setOnClickListener(keyboardListener);
+        dsh.setOnClickListener(keyboardListener);
+        e.setOnClickListener(keyboardListener);
+        f.setOnClickListener(keyboardListener);
+        fsh.setOnClickListener(keyboardListener);
+        g.setOnClickListener(keyboardListener);
+        gsh.setOnClickListener(keyboardListener);
+        a.setOnClickListener(keyboardListener);
+        b.setOnClickListener(keyboardListener);
+        ash.setOnClickListener(keyboardListener);
     }
 
 
@@ -276,136 +312,22 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         a = findViewById(R.id.button_main_a);
         ash = findViewById(R.id.button_main_ash);
         b = findViewById(R.id.button_main_b);
-        octave = findViewById(R.id.button_main_octave);
         song1 = findViewById(R.id.button_main_song1);
+        scale = findViewById(R.id.button_main_scale);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_main_c: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hcNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(cNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_csh: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hcshNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(cshNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_d: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hdNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(dNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_dsh: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hdshNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(dshNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_e: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(heNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(eNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_f: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hfNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(fNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_fsh: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hfshNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(fshNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_g: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hgNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(gNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_gsh: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(hgshNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(gshNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_a: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(laNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(aNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_ash: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(lashNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(ashNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
-            case R.id.button_main_b: {
-                if (isSoundPoolLoaded) {
-                    if (octaveHigh) {
-                        soundPool.play(lbNote, 1, 1, 1, 0, 1f);
-                    } else {
-                        soundPool.play(bNote, 1, 1, 1, 0, 1f);
-                    }
-                }
-                break;
-            }
 
 
+    }
+    private class KeyboardListener implements View.OnClickListener{
+        @Override
+        public void onClick(View view){
+            int songId = noteMap.get(view.getId());
+            if(songId != 0){
+                    soundPool.play(songId, 1, 1, 1, 0, 1);
+            }
         }
-
     }
 }
