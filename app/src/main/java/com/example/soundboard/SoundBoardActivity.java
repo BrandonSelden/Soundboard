@@ -18,9 +18,9 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
     private Button c, csh, d, dsh, e, f, fsh, g, gsh, a, ash, b, song1, scale;
     private SoundPool soundPool;
     private boolean isSoundPoolLoaded;
-    private Note cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfshNote, hfNote, hgNote, hgshNote, laNote, lashNote, lbNote;
+    private Note cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote, laNote, lashNote, lbNote, yes;
     private Map<Integer, Integer> noteMap;
-    private Note[] notes;
+    private Note[] notes, bbscale;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +28,8 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         wireWidgets();
         setListeners();
         initializeSoundPool();
-        notes = new Note[] {cNote, cshNote, dNote, dshNote, eNote, fNote, fshNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfshNote, hfNote, hgNote, hgshNote, laNote, lashNote, lbNote};
+        notes = new Note[] {laNote, lashNote, lbNote, cNote, cshNote, dNote, dshNote, eNote, fNote, fshNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote};
+        bbscale = new Note[] { cNote, dNote, dshNote, fNote, gNote, aNote};
 
     }
 
@@ -66,6 +67,7 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         laNote = new Note(soundPool.load(this, R.raw.scalea, 1), 100);
         lashNote = new Note(soundPool.load(this, R.raw.scalebb, 1), 100);
         lbNote = new Note(soundPool.load(this, R.raw.scaleb, 1), 100);
+        yes = new Note(soundPool.load(this, R.raw.for_project_i_swear, 1), 212000);
         noteMap = new HashMap<>();
         noteMap.put(c.getId(), cNote.getSoundId());
         noteMap.put(csh.getId(), cshNote.getSoundId());
@@ -109,10 +111,21 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         scale.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                for(Note no : notes){
+                soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
+                delay(500);
+                for(Note no: bbscale){
                     soundPool.play(no.getSoundId(), 1, 1, 1, 0, 1f);
-                    delay(500);
+                    delay(250);
                 }
+                soundPool.play(ashNote.getSoundId(), 1, 1, 1, 0, 1f);
+                delay(500);
+                for(int i = 5; i >= 0; i--){
+                    soundPool.play(bbscale[i].getSoundId(), 1, 1, 1, 0, 1f);
+                    delay(250);
+                }
+                soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
+                delay(500);
+                soundPool.play(yes.getSoundId(), 1, 1, 1, 0, 1f);
             }
         });
         song1.setOnClickListener(new View.OnClickListener() {
