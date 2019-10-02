@@ -1,7 +1,7 @@
 package com.example.soundboard;
 
 public class Note {
-    int soundId, intDelay;
+    private int soundId, intDelay;
     public Note(int soundId, int intDelay){
         this.soundId = soundId;
         this.intDelay = intDelay;

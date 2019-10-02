@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SoundBoardActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button c, csh, d, dsh, e, f, fsh, g, gsh, a, ash, b, song1, scale;
+    private Button c, csh, d, dsh, e, f, fsh, g, gsh, a, ash, b, song1, scale, record, playback;
     private SoundPool soundPool;
-    private boolean isSoundPoolLoaded;
-    private Note cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote, laNote, lashNote, lbNote, yes;
+    private boolean isSoundPoolLoaded, isRecording;
+    private Note cNote, cshNote, dNote, dshNote, eNote, fshNote, fNote, gNote, gshNote, aNote, ashNote, bNote, hcNote,
+            hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote, laNote, lashNote, lbNote, yes;
     private Map<Integer, Integer> noteMap;
     private Note[] notes, bbscale;
+    private Song song;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +30,10 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         wireWidgets();
         setListeners();
         initializeSoundPool();
-        notes = new Note[] {laNote, lashNote, lbNote, cNote, cshNote, dNote, dshNote, eNote, fNote, fshNote, gNote, gshNote, aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote};
+        notes = new Note[] {laNote, lashNote, lbNote, cNote, cshNote, dNote, dshNote, eNote, fNote, fshNote, gNote, gshNote,
+                aNote, ashNote, bNote, hcNote, hcshNote, hdNote, hdshNote, heNote, hfNote, hfshNote, hgNote, hgshNote};
         bbscale = new Note[] { cNote, dNote, dshNote, fNote, gNote, aNote};
+        song = new Song();
 
     }
 
@@ -95,19 +99,6 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setListeners() {
-//
-//        c.setOnClickListener(this);
-//        csh.setOnClickListener(this);
-//        d.setOnClickListener(this);
-//        dsh.setOnClickListener(this);
-//        e.setOnClickListener(this);
-//        f.setOnClickListener(this);
-//        fsh.setOnClickListener(this);
-//        g.setOnClickListener(this);
-//        gsh.setOnClickListener(this);
-//        a.setOnClickListener(this);
-//        ash.setOnClickListener(this);
-//        b.setOnClickListener(this);
         scale.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -126,6 +117,25 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
                 soundPool.play(lashNote.getSoundId(), 1, 1, 1, 0, 1f);
                 delay(500);
                 soundPool.play(yes.getSoundId(), 1, 1, 1, 0, 1f);
+            }
+        });
+        record.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(!isRecording && song != null){
+                    song.resetSong();
+                }
+                isRecording = !isRecording;
+
+            }
+        });
+        playback.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                for(int i = 0; i < song.getLength(); i ++){
+                    soundPool.play(song.getValue(i), 1, 1, 1, 0, 1f);
+                    delay(500);
+                }
             }
         });
         song1.setOnClickListener(new View.OnClickListener() {
@@ -327,6 +337,8 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         b = findViewById(R.id.button_main_b);
         song1 = findViewById(R.id.button_main_song1);
         scale = findViewById(R.id.button_main_scale);
+        playback = findViewById(R.id.button_main_play);
+        record = findViewById(R.id.button_main_record);
     }
 
     @Override
@@ -338,8 +350,13 @@ public class SoundBoardActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onClick(View view){
             int songId = noteMap.get(view.getId());
-            if(songId != 0){
+            if(!isRecording){
+                if (songId != 0) {
                     soundPool.play(songId, 1, 1, 1, 0, 1);
+                }
+            }
+            else{
+                song.addNote(songId);
             }
         }
     }
